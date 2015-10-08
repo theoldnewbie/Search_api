@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   </head>
   <body>
+    <style>
+    img {
+      margin: 7px 7px 7px 0; / Отступы вокруг картинки /
+      border: 1px solid #000;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+      width: 400px;
+      height: 250px;
+      float: left;
+    }
+    li {
+      overflow: hidden;
+    }
+    
+    </style>
     <div class="container">
       <h1 class="project-name">Введите данные:</h1>
     </div>
@@ -19,7 +35,9 @@
       </form>
     </div>
 
-    <div id="result" class="container">
+    <div class="container">
+      <ul id="result">
+      </ul>
       
     </div>
 
