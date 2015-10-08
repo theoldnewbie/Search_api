@@ -42,14 +42,14 @@ $(function() {
 	var showLocationsList = function (response) {
 		console.log(response);
 		var elements = response.locations;
-		var $divTemp = $('<div>');
+		var $ulResult = $('<ul>');
 		var $result = $('#result');
 		var addHtml = function(element){
-			$divTemp.append('<li>'+element.long_title+'</li>');
+			$ulResult.append('<li>'+element.long_title+'</li>');
 		};
 		elements.forEach(addHtml);
 
-		$result.html('Возможно вы имелли ввиду:').append($divTemp);;
+		$result.html('Возможно вы имелли ввиду:').append($ulResult);
 
 	};
 	var showErrorList = function () {
