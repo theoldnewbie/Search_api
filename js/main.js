@@ -26,17 +26,14 @@ $(function() {
 	var saveLocalStorage = function(arg) {
 		if(successLocations.indexOf(arg) != 0){
 			successLocations.push(arg);
+			localStorage.setItem('successLocations', JSON.stringify(successLocations));
 		};
-		localStorage.setItem('successLocations', JSON.stringify(successLocations));
 	};
 
 	var addPageLocalStorageItems = function () {
 		var $ulResult = $('<ul>');
 		var $result = $('#result');
-		var resultItems = JSON.parse(localStorage.getItem('successLocations'));
-		if(!resultItems){
-			resultItems = [];
-		}
+		var resultItems = successLocations;
 		console.log(resultItems);
 		for (var i = 0; i < resultItems.length; i++) {
 			$ulResult.append('<li><a href ="#">'+resultItems[i]+'</a></li>');
