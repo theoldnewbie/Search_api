@@ -4,6 +4,10 @@ $(function() {
 
 	var $searchInput = $('#search');
 
+	var successLocations = JSON.parse(localStorage.getItem('successLocations'));
+	if(!successLocations){
+		successLocations = [];
+	}
 	var queryText = (function(){
 		var _value = '';
 		return {
@@ -17,6 +21,29 @@ $(function() {
 		};
 
 	})();
+
+
+	var saveLocalStorage = function(arg) {
+		if(successLocations.indexOf(arg) != 0){
+			successLocations.push(arg);
+		};
+		localStorage.setItem('successLocations', JSON.stringify(successLocations));
+	};
+
+	var addPageLocalStorageItems = function () {
+		var $ulResult = $('<ul>');
+		var $result = $('#result');
+		var resultItems = JSON.parse(localStorage.getItem('successLocations'));
+		if(!resultItems){
+			resultItems = [];
+		}
+		console.log(resultItems);
+		for (var i = 0; i < resultItems.length; i++) {
+			$ulResult.append('<li><a href ="#">'+resultItems[i]+'</a></li>');
+			$result.append($ulResult);
+		};
+	};
+
 	
 
 	var onSubmitHandler = function(event) {
@@ -73,45 +100,50 @@ $(function() {
 
 			fragment.appendChild(li);
 		}
+		
 		elements.forEach(someFunc);
 		existingUl.appendChild(fragment);
 	};
 
 	//ЭТО РЕАЛИЗАЦИ НА JQUERY!!!
 
-	// var showLocationsList = function (response) {
-	// 	console.log(response);
-	// 	var elements = response.locations;
-	// 	var $ulResult = $('<ul>');
-	// 	var $result = $('#result');
-	// 	var addHtml = function(element){
-	// 		$ulResult.append('<li>'+element.long_title+'</li>');
-	// 	};
-	// 	elements.forEach(addHtml);
+	var showLocationsList = function (response) {
+		console.log(response);
+		var elements = response.locations;
+		var $ulResult = $('<ul>');
+		var $result = $('#result');
+		var addHtml = function(element){
+			$ulResult.append('<li><a href ="#">'+element.place_name+'</a></li>');
+		};
+		elements.forEach(addHtml);
 
-	// 	$result.html('Возможно вы имели ввиду:').append($ulR);
+		$result.html('Возможно вы имели ввиду:').append($ulResult);
+		
+	};
 
-	// };
-
+		var render = function(event){
+		var link = event.target;
+		queryText.set(link.text);
+		};
 
 	//ЭТО РЕАЛИЗАЦИЯ НА Vanilla
 
-	var showLocationsList = function (response){
-		var elements = response.locations;
-		var fragment = document.createDocumentFragment();
-		var existingUl = document.getElementById('result');
-		function someFunc (element) {
-			var li = document.createElement('li');
-			var p = document.createElement('p');
-			p.innerHTML = element.long_title;
-			li.appendChild(p);
+	// var showLocationsList = function (response){
+	// 	var elements = response.locations;
+	// 	var fragment = document.createDocumentFragment();
+	// 	var existingUl = document.getElementById('result');
+	// 	function someFunc (element) {
+	// 		var li = document.createElement('li');
+	// 		var p = document.createElement('p');
+	// 		p.innerHTML = element.long_title;
+	// 		li.appendChild(p);
 
-			fragment.appendChild(li);
-		}
-		elements.forEach(someFunc);
-		existingUl.innerHTML = '<h2> Возможно вы имели ввиду: </h2>';
-		existingUl.appendChild(fragment);
-	};
+	// 		fragment.appendChild(li);
+	// 	}
+	// 	elements.forEach(someFunc);
+	// 	existingUl.innerHTML = '<h2> Возможно вы имели ввиду: </h2>';
+	// 	existingUl.appendChild(fragment);
+	// };
 
 	//ЭТО РЕАЛИЗАЦИ НА JQUERY!!!
 
@@ -130,6 +162,7 @@ $(function() {
 
 	var onChangeQueryText = function (event, text) {
 		$searchInput.val('');
+		$('#result').html('');
 		var callbackSuccess = function (data){
 			//console.info(data);
 			switch(data.response.application_response_code) {
@@ -137,6 +170,7 @@ $(function() {
 				case '101':
 				case '110':
 					showBuildingsList(data.response);
+					saveLocalStorage(queryText.get());
 				break;
 				case '200':
 				case '202':
@@ -153,7 +187,11 @@ $(function() {
 		nestoriaApi.getLocations(text, callbackSuccess, callbackError);
 	};
 
+	addPageLocalStorageItems();
+
 	$searchForm.on('submit', onSubmitHandler);
 
 	$searchInput.on('searchText:change', onChangeQueryText);
+
+	$('ul').on('click', render);
 });
