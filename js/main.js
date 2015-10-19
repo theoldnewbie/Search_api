@@ -21,27 +21,28 @@ $(function() {
 		};
 	})();
 
-
 	var saveLocalStorage = function(arg) {
-		if(successLocations.length > 0){
 			if(successLocations.indexOf(arg) == -1){
 				successLocations.push(arg);
 			};
-		}else {
-			successLocations.push(arg);
-		}
 		localStorage.setItem('successLocations', JSON.stringify(successLocations));
 	};
 
 	var addPageLocalStorageItems = function () {
 		var $ulResult = $('<ul>');
-		var $result = $('#goodRes');
+		var $result = $('#result');
 		var resultItems = successLocations;
 		console.log(resultItems);
 		for (var i = 0; i < resultItems.length; i++) {
 			$ulResult.append('<li><a href ="#">'+resultItems[i]+'</a></li>');
 			$result.append($ulResult);
 		};
+
+		var render = function(event){
+		var link = event.target;
+		queryText.set(link.text);
+	};
+		$ulResult.on('click', render);
 	};
 
 	
@@ -111,20 +112,16 @@ $(function() {
 		console.log(response);
 		var elements = response.locations;
 		var $ulResult = $('<ul>');
-		var $result = $('#goodRes');
 		var addHtml = function(element){
 			$ulResult.append('<li><a href ="#">'+element.place_name+'</a></li>');
 		};
 		elements.forEach(addHtml);
 
-		$result.html('Возможно вы имели ввиду:').append($ulResult);
+		$('#result').html('Возможно вы имели ввиду:').append($ulResult);
 		
 	};
 
-	var render = function(event){
-		var link = event.target;
-		queryText.set(link.text);
-	};
+	
 
 	//ЭТО РЕАЛИЗАЦИЯ НА Vanilla
 
@@ -163,6 +160,7 @@ $(function() {
 	var onChangeQueryText = function (event, text) {
 		$searchInput.val('');
 		$('#result').html('');
+		$('#res').html('');
 		var callbackSuccess = function (data){
 			//console.info(data);
 			switch(data.response.application_response_code) {
@@ -193,5 +191,5 @@ $(function() {
 
 	$searchInput.on('searchText:change', onChangeQueryText);
 
-	$('#goodRes').on('click', render);
+	
 });
