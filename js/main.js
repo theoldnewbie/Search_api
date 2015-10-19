@@ -19,20 +19,23 @@ $(function() {
 					$searchInput.trigger('searchText:change', val);
 				}
 		};
-
 	})();
 
 
 	var saveLocalStorage = function(arg) {
-		if(successLocations.indexOf(arg) != 0){
+		if(successLocations.length > 0){
+			if(successLocations.indexOf(arg) == -1){
+				successLocations.push(arg);
+			};
+		}else {
 			successLocations.push(arg);
-			localStorage.setItem('successLocations', JSON.stringify(successLocations));
-		};
+		}
+		localStorage.setItem('successLocations', JSON.stringify(successLocations));
 	};
 
 	var addPageLocalStorageItems = function () {
 		var $ulResult = $('<ul>');
-		var $result = $('#result');
+		var $result = $('#goodRes');
 		var resultItems = successLocations;
 		console.log(resultItems);
 		for (var i = 0; i < resultItems.length; i++) {
@@ -108,7 +111,7 @@ $(function() {
 		console.log(response);
 		var elements = response.locations;
 		var $ulResult = $('<ul>');
-		var $result = $('#result');
+		var $result = $('#goodRes');
 		var addHtml = function(element){
 			$ulResult.append('<li><a href ="#">'+element.place_name+'</a></li>');
 		};
@@ -118,10 +121,10 @@ $(function() {
 		
 	};
 
-		var render = function(event){
+	var render = function(event){
 		var link = event.target;
 		queryText.set(link.text);
-		};
+	};
 
 	//ЭТО РЕАЛИЗАЦИЯ НА Vanilla
 
@@ -167,7 +170,7 @@ $(function() {
 				case '101':
 				case '110':
 					showBuildingsList(data.response);
-					saveLocalStorage(queryText.get());
+					saveLocalStorage(text);
 				break;
 				case '200':
 				case '202':
@@ -190,5 +193,5 @@ $(function() {
 
 	$searchInput.on('searchText:change', onChangeQueryText);
 
-	$('ul').on('click', render);
+	$('#goodRes').on('click', render);
 });
